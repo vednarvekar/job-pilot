@@ -4,5 +4,5 @@
   "locations": ["remote", "india", "mumbai"],
   "exclude": ["senior director", "intern", "unpaid"],
   "min_score": 15,
-  "model": "claude-sonnet-5-5"
+  "model": "sonnet"
 }

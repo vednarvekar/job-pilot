@@ -1,6 +1,5 @@
 """job-pilot: find jobs that match you and generate a tailored resume for each."""
 import json
-import os
 from pathlib import Path
 
 from flask import Flask, abort, jsonify, render_template, request, send_file
@@ -52,10 +51,8 @@ def tailor(jid):
     jobs = jobstore.load()
     if jid not in jobs:
         abort(404)
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        return jsonify(error="Set ANTHROPIC_API_KEY before starting the app."), 400
     try:
-        res = tailor_mod.tailor(jobs[jid], master(), cfg().get("model", "claude-sonnet-5-5"))
+        res = tailor_mod.tailor(jobs[jid], master(), cfg().get("model", "sonnet"))
     except Exception as e:
         return jsonify(error=str(e)), 500
     jobs[jid]["resume"] = res

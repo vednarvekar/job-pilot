@@ -1,8 +1,9 @@
 """Tailor the master resume to one job using Claude."""
 import re
+import shutil
+import subprocess
 from pathlib import Path
 
-import anthropic
 import markdown
 
 OUT = Path("output")
@@ -24,16 +25,23 @@ No commentary, no code fences.
 important job requirements the candidate does NOT clearly cover (gaps), so they can address them."""
 
 
+def ask_claude(prompt: str, model: str) -> str:
+    """Run the local Claude Code CLI headless, so it uses your Claude Pro/Max login (no API key)."""
+    if not shutil.which("claude"):
+        raise RuntimeError("Claude Code CLI not found. Install it (npm i -g @anthropic-ai/claude-code) "
+                           "and run `claude` once to log in with your Claude subscription.")
+    r = subprocess.run(["claude", "-p", "--model", model, "--system-prompt", SYSTEM],
+                       input=prompt, capture_output=True, text=True, timeout=300)
+    if r.returncode != 0 or not r.stdout.strip():
+        raise RuntimeError((r.stderr or r.stdout or "claude CLI failed").strip()[:500])
+    return r.stdout.strip()
+
+
 def tailor(job: dict, master: str, model: str) -> dict:
-    client = anthropic.Anthropic()
-    msg = client.messages.create(
-        model=model, max_tokens=3000, system=SYSTEM,
-        messages=[{"role": "user", "content":
-                   f"<master_resume>\n{master}\n</master_resume>\n\n"
-                   f"<job>\nTitle: {job['title']}\nCompany: {job['company']}\n"
-                   f"Location: {job['location']}\n\n{job['description'][:8000]}\n</job>"}],
-    )
-    text = "".join(b.text for b in msg.content if b.type == "text").strip()
+    text = ask_claude(
+        f"<master_resume>\n{master}\n</master_resume>\n\n"
+        f"<job>\nTitle: {job['title']}\nCompany: {job['company']}\n"
+        f"Location: {job['location']}\n\n{job['description'][:8000]}\n</job>", model)
     resume, _, notes = text.partition("---NOTES---")
     OUT.mkdir(exist_ok=True)
     stem = re.sub(r"[^a-z0-9]+", "-", f"{job['company']}-{job['title']}".lower()).strip("-")[:60]

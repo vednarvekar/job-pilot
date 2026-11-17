@@ -8,14 +8,14 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp config.example.json config.json            # edit: search terms, skills, locations
 cp master_resume.example.md master_resume.md  # edit: your real, complete resume
-export ANTHROPIC_API_KEY=sk-ant-...
+npm i -g @anthropic-ai/claude-code && claude   # one-time: log in with your Claude Pro account
 python app.py                                 # open http://localhost:5000
 ```
 
 ## Use
 1. **Find jobs** – pulls from Remotive, Arbeitnow and RemoteOK (free, no keys), filters by your
    locations/excludes, and scores each job by how many of your skills it mentions.
-2. **Tailor resume** – Claude rewrites `master_resume.md` for that job (never inventing facts) and
+2. **Tailor resume** – Claude (via the `claude` CLI, using your Pro subscription - no API key, no extra cost) rewrites `master_resume.md` for that job (never inventing facts) and
    lists gaps you should address. Open it and use *Print → Save as PDF*.
 3. Mark jobs applied/skipped to keep the list clean.
 
