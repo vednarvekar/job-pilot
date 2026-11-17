@@ -1,0 +1,8 @@
+{
+  "search_terms": ["python developer", "backend engineer"],
+  "skills": ["python", "django", "flask", "sql", "postgresql", "docker", "aws", "rest", "git"],
+  "locations": ["remote", "india", "mumbai"],
+  "exclude": ["senior director", "intern", "unpaid"],
+  "min_score": 15,
+  "model": "claude-sonnet-5-5"
+}

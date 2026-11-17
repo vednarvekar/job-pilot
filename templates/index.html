@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job Pilot</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1c2330;--mut:#667085;--line:#e4e7ec;--acc:#3b5bdb;--ok:#2b8a3e;--warn:#e67700}
+@media(prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b2029;--fg:#e6e9ef;--mut:#98a2b3;--line:#2b3240;--acc:#7c93ff;--ok:#51cf66;--warn:#ffa94d}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 20px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line)}
+h1{font-size:18px;margin:0}main{max-width:900px;margin:0 auto;padding:16px}
+button,select{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 12px;border-radius:8px;cursor:pointer}
+button.p{background:var(--acc);border-color:var(--acc);color:#fff}button:disabled{opacity:.5}
+.job{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:grid;grid-template-columns:56px 1fr;gap:14px}
+.score{font-weight:700;font-size:20px;text-align:center;align-self:start;padding-top:2px}.score small{display:block;font-size:11px;color:var(--mut);font-weight:400}
+.t{font-weight:600}.t a{color:inherit}.m{color:var(--mut);font-size:13px}
+.chips span{display:inline-block;font-size:12px;border-radius:99px;padding:1px 9px;margin:4px 4px 0 0;background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.chips span.x{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+.act{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.notes{margin-top:8px;font-size:13px;color:var(--mut);white-space:pre-wrap}
+#msg{color:var(--mut);font-size:13px}
+@media(max-width:520px){.job{grid-template-columns:1fr}.score{text-align:left}}
+</style></head><body>
+<header><h1>✈ Job Pilot <span class="m">· {{ jobs|length }} jobs</span></h1>
+<span id="msg"></span>
+<div><select id="f" onchange="filt()"><option value="">All</option><option>new</option><option>applied</option><option>skipped</option></select>
+<button class="p" id="rb" onclick="refresh()">Find jobs</button></div></header>
+<main>
+{% if not jobs %}<p class="m">No jobs yet — click <b>Find jobs</b>.</p>{% endif %}
+{% for j in jobs %}
+<div class="job" data-status="{{ j.status }}" id="{{ j.id }}">
+ <div class="score">{{ j.score }}<small>match</small></div>
+ <div>
+  <div class="t"><a href="{{ j.url }}" target="_blank" rel="noopener">{{ j.title }}</a></div>
+  <div class="m">{{ j.company }} · {{ j.location or 'n/a' }} · {{ j.source }} {{ j.date }}</div>
+  <div class="chips">{% for s in j.matched %}<span>✓ {{ s }}</span>{% endfor %}{% for s in j.missing[:4] %}<span class="x">{{ s }}</span>{% endfor %}</div>
+  <div class="act">
+   <button class="p" onclick="tailor('{{ j.id }}',this)">{{ 'Re-tailor' if j.resume else 'Tailor resume' }}</button>
+   {% if j.resume %}<a href="/resume/{{ j.id }}" target="_blank">View / print PDF</a> · <a href="/resume/{{ j.id }}.md">.md</a>{% endif %}
+   <select onchange="setStatus('{{ j.id }}',this.value)">{% for s in ['new','applied','skipped'] %}<option {{ 'selected' if j.status==s }}>{{ s }}</option>{% endfor %}</select>
+  </div>
+  {% if j.resume and j.resume.notes %}<div class="notes"><b>Gaps to address:</b>
+{{ j.resume.notes }}</div>{% endif %}
+ </div></div>
+{% endfor %}
+</main>
+<script>
+const msg=t=>document.getElementById('msg').textContent=t;
+async function post(u,b){const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})});return [r.ok,await r.json().catch(()=>({error:r.statusText}))]}
+async function refresh(){const b=document.getElementById('rb');b.disabled=true;msg('Searching job boards…');
+ const [ok,d]=await post('/refresh');msg(d.errors?.length?'Some sources failed: '+d.errors.join('; '):'');if(ok&&!d.errors?.length)location.reload();else{b.disabled=false;if(ok)setTimeout(()=>location.reload(),1500)}}
+async function tailor(id,b){b.disabled=true;b.textContent='Writing…';const [ok,d]=await post('/tailor/'+id);
+ if(ok)location.reload();else{alert(d.error||'Failed');b.disabled=false;b.textContent='Tailor resume'}}
+function setStatus(id,s){post('/status/'+id,{status:s});document.getElementById(id).dataset.status=s}
+function filt(){const v=document.getElementById('f').value;document.querySelectorAll('.job').forEach(e=>e.style.display=!v||e.dataset.status==v?'':'none')}
+</script></body></html>

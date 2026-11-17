@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+data/
+output/
+config.json
+master_resume.md
+.env
