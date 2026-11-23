@@ -18,7 +18,15 @@ Use only facts present in the master resume.
 irrelevant items. Mirror the job's terminology where the candidate genuinely has that skill.
 - Write a 2-line summary aimed at this role. Put the most relevant skills first.
 - Strong action verbs, quantified results where the master already has numbers.
-- One page worth of content. Keep the header (name/contact) exactly as in the master.
+- One page worth of content (about 45 lines): cut the weakest bullets rather than shrink anything.
+- Keep the header exactly like the master: `# Name`, then a headline line retitled to match the \
+target role (truthful: use the candidate's real experience, e.g. "AI & Automation Engineer | AWS, DevOps"), \
+then the contact lines.
+- Format roles/projects/education as `### Title — Org | Dates or link` (the part after ` | ` is \
+right-aligned), with an italic tech-stack line under projects. Sections in this order unless the \
+job favours projects first: Summary, Experience, Projects, Education, Technical Skills (grouped \
+`- **Group:** items`), Certifications (only if relevant).
+- Lead every bullet with a strong verb and the outcome; keep real numbers, never add new ones.
 - Output ONLY the resume in Markdown (# name, ## sections, ### roles, - bullets). \
 No commentary, no code fences.
 - After the resume add a line `---NOTES---` followed by 2-4 short bullets: \
@@ -52,12 +60,43 @@ def tailor(job: dict, master: str, model: str) -> dict:
 
 
 def render_html(md: str) -> str:
-    body = markdown.markdown(md, extensions=["extra"])
-    return f"""<!doctype html><meta charset=utf-8><title>Resume</title>
+    """Markdown -> clean single-column, ATS-friendly resume page (A4, prints to one page).
+
+    Conventions in the markdown: `# Name`, then a headline line and contact lines before the first
+    `##`; `### Left text | Right text` renders as a row with the right part (dates/links) right-aligned.
+    """
+    md = re.sub(r"(?m)^([^-\n][^\n]*)\n(- )", r"\1\n\n\2", md.strip())  # a list needs a blank line before it
+    body = markdown.markdown(md, extensions=["extra", "nl2br"])
+    head, sep, rest = body.partition("<h2>")
+    name = re.search(r"<h1>(.*?)</h1>", head, re.S).group(1)
+    lines = [l.strip() for l in re.split(r"<br />\s*|</?p>", head.split("</h1>", 1)[1]) if l.strip()]
+    head = f'<h1 class="name">{name}</h1>'
+    if lines:
+        head += f'<p class="headline">{lines[0]}</p>'
+        head += "".join(f"<p>{re.sub(r'\s*\|\s*', ' &nbsp;·&nbsp; ', l)}</p>" for l in lines[1:])
+    body = f'<header>{head}</header>' + (sep + rest if sep else "")
+    body = re.sub(r"<h3>(.*?)\s\|\s(.*?)</h3>",
+                  r'<h3><span class="l">\1</span><span class="r">\2</span></h3>', body)
+    return f"""<!doctype html><html lang=en><meta charset=utf-8><title>Resume</title>
 <style>
-body{{font:11pt/1.4 Georgia,serif;max-width:780px;margin:30px auto;padding:0 20px;color:#111}}
-h1{{font-size:22pt;margin:0}} h2{{font-size:12pt;text-transform:uppercase;letter-spacing:.06em;
-border-bottom:1px solid #444;margin:16px 0 6px}} h3{{font-size:11pt;margin:10px 0 2px}}
-ul{{margin:2px 0 6px;padding-left:20px}} p{{margin:3px 0}}
-@media print{{body{{margin:0}} @page{{margin:14mm}}}}
-</style>{body}"""
+@page{{size:A4;margin:9mm 13mm}}
+:root{{--ink:#1a1a1a;--mut:#555;--acc:#1f3a5f}}
+*{{box-sizing:border-box}}
+body{{font:9pt/1.25 "Helvetica Neue",Calibri,Arial,sans-serif;color:var(--ink);max-width:800px;
+margin:24px auto;padding:0 22px;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+header{{text-align:center;margin-bottom:6px}}
+h1.name{{font-size:22pt;letter-spacing:.14em;text-transform:uppercase;margin:0 0 2px;font-weight:700}}
+p.headline{{font-size:10.6pt;font-weight:600;color:var(--acc);margin:0 0 3px}}
+header p{{margin:1px 0;color:var(--mut);font-size:9pt}}
+a{{color:inherit;text-decoration:none}}
+h2{{font-size:9.8pt;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);
+border-bottom:1.2px solid var(--acc);padding-bottom:1px;margin:6px 0 3px;break-after:avoid}}
+h3{{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:10pt;
+margin:4px 0 1px;font-weight:700;break-after:avoid}}
+h3 .r{{font-weight:400;color:var(--mut);font-size:9pt;white-space:nowrap}}
+p{{margin:2px 0}} em{{color:var(--mut)}}
+ul{{margin:2px 0 3px;padding-left:15px}} li{{margin:1px 0}}
+h2+ul{{list-style:none;padding-left:0}} h2+ul li{{margin:2px 0}}
+li,h3{{break-inside:avoid}}
+@media print{{body{{margin:0;padding:0;max-width:none}}}}
+</style>{body}</html>"""
