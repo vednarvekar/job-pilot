@@ -1,0 +1,510 @@
+/* ================= GLOBAL RESETS & VARIABLES ================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --dark:   #2b303a;
+  --accent: #384353;
+  --gray:   #4b5563;
+  --lgray:  #9ca3af;
+  --rule:   #6c757d;
+  --bg:     #ffffff;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #e2e2e2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+  color: #333333;
+  -webkit-font-smoothing: antialiased;
+}
+
+.resume-pages {
+  width: 100%;
+}
+
+.resume-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.page-break {
+  margin-top: 28px;
+}
+
+/* ================= RESUME CONTAINER ================= */
+.resume-container {
+  width: 800px;
+  background-color: var(--bg);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-areas: "side main";
+}
+.left-column { grid-area: side; order: 2; position: relative; }
+.right-column { grid-area: main; order: 1; }
+
+/* ================= LEFT COLUMN ================= */
+.left-column {
+  background-color: #e3e3e5;
+  padding: 0 0 30px 0;
+}
+
+.profile-photo-container {
+  position: relative;
+  background-color: var(--accent);
+  padding-top: 40px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-photo {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 5px solid #ffffff;
+  object-fit: cover;
+  margin-bottom: -60px;
+}
+
+.photo-compact .photo-placeholder {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 5px solid #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -60px;
+  font-size: 44px;
+}
+
+.left-content {
+  padding: 70px 25px 20px 25px;
+}
+
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--dark);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.sidebar-divider {
+  border: none;
+  height: 1px;
+  background-color: var(--rule);
+  margin-bottom: 15px;
+}
+
+/* Contact Details */
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 11px;
+  color: #333;
+  font-weight: 500;
+}
+
+.contact-item svg {
+  width: 16px;
+  margin-right: 10px;
+  font-size: 13px;
+  color: var(--dark);
+}
+
+.contact-item i {
+  width: 16px;
+  margin-right: 10px;
+  font-size: 13px;
+  color: var(--dark);
+  text-align: center;
+}
+
+/* Sidebar Lists */
+.sidebar-list {
+  list-style-type: disc;
+  padding-left: 18px;
+}
+
+.sidebar-list li {
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* Reference */
+.reference-item {
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+.reference-name {
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 2px;
+}
+
+.reference-title {
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.reference-contact {
+  font-size: 11px;
+  color: #333;
+  margin-top: 3px;
+}
+
+/* ================= RIGHT COLUMN ================= */
+.right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-banner {
+  background-color: var(--accent);
+  color: #ffffff;
+  padding: 40px 30px 25px 30px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.header-banner h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.header-banner h2 {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #d1d5db;
+}
+
+.right-content {
+  padding: 26px 28px 24px 10px;
+  position: relative;
+}
+
+/* Section Styling */
+.section {
+  position: relative;
+  padding-left: 45px;
+  margin-bottom: 20px;
+}
+
+.section-icon-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 13px;
+  z-index: 2;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--dark);
+  text-transform: uppercase;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.section-divider {
+  border: none;
+  height: 1px;
+  background-color: var(--rule);
+  margin-bottom: 15px;
+}
+
+/* Timeline Line */
+.section::before {
+  content: '';
+  position: absolute;
+  left: 14.5px;
+  top: 30px;
+  bottom: -25px;
+  width: 1px;
+  background-color: var(--dark);
+  z-index: 1;
+}
+
+.section:last-child::before {
+  display: none;
+}
+
+/* Profile Text */
+.profile-text {
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: #444444;
+  text-align: justify;
+}
+
+/* Experience & Education Items */
+.item {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.item::before {
+  content: '';
+  position: absolute;
+  left: -33.5px;
+  top: 5px;
+  width: 5px;
+  height: 5px;
+  background-color: #ffffff;
+  border: 1px solid var(--dark);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.item-company, .item-degree {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.item-date {
+  font-size: 10px;
+  color: #444;
+  font-weight: 500;
+}
+
+.item-role, .item-school {
+  font-size: 10.5px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.item-gpa {
+  font-size: 11px;
+  font-weight: 700;
+  color: #333;
+  margin-top: 4px;
+}
+
+.item-bullets {
+  list-style-type: disc;
+  padding-left: 15px;
+}
+
+.item-bullets li {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: #444444;
+  margin-bottom: 3px;
+}
+
+/* ================= BUTTON STYLES ================= */
+.button-container {
+  margin: 20px;
+  text-align: center;
+}
+
+.no-print {
+  border: none;
+  background: #111;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.no-print:hover {
+  background: #000;
+}
+
+/* ================= PUPPETEER / PRINT STYLES ================= */
+@media print {
+  @page {
+    size: A4;
+    margin: 7mm 0;
+  }
+
+  @page :first {
+    /* The first page should start directly at the navy header. Keep the
+       regular top margin on page two and later pages. */
+    margin: 0 0 7mm 0;
+  }
+
+  html, body {
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    align-items: stretch;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume-pages {
+    width: 100%;
+  }
+
+  .resume-page {
+    width: 100%;
+    break-inside: auto;
+  }
+
+  .resume-container {
+    /* Match Chromium's actual printable A4 width. A fixed 210mm box leaves
+       a fractional-pixel white strip on the right of the exported PDF. */
+    width: 100%;
+    box-shadow: none;
+    margin: 0;
+    page-break-after: auto;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .header-banner {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    min-height: 132px;
+    position: relative;
+    /* Chromium does not consistently apply @page :first. Pull the first
+       page's header back over the page margin without affecting page two. */
+    margin-top: -7mm;
+  }
+
+  /* Chromium exports A4 a fraction wider than the grid's 210mm layout.
+     Paint that fractional right edge with the header colour. */
+  .header-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -2px;
+    width: 2px;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .right-content {
+    padding-bottom: 30px;
+  }
+
+  /* Repeat a small inset when the grey sidebar is fragmented onto a later
+     page. Offset the photo so page one keeps its original position. */
+  .left-column {
+    padding-top: 6px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .profile-photo-container {
+    margin-top: calc(-7mm - 6px);
+  }
+
+  .button-container, .no-print {
+    display: none !important;
+  }
+
+  h1, .item, .sidebar-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .section {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  p, li {
+    orphans: 3;
+    widows: 3;
+  }
+}
+
+/* ================= MOBILE RESPONSIVENESS ================= */
+@media (max-width: 820px) {
+  body {
+    padding: 16px 0;
+  }
+
+  .resume-container {
+    width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-areas: "side" "main";
+  }
+
+  .left-content {
+    padding-top: 80px;
+  }
+
+  .page-break {
+    margin-top: 18px;
+  }
+}
+
+/* Keep the desktop two-column layout when Chromium prints at A4 width.
+   A4 is about 794px at 96dpi, so it otherwise matches the mobile breakpoint. */
+@media print {
+  .resume-container {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    grid-template-areas: "side main";
+    width: 100%;
+    margin-left: 0;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .left-column,
+  .right-column {
+    min-width: 0;
+  }
+
+}

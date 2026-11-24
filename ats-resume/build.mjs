@@ -1,0 +1,14 @@
+import puppeteer from "puppeteer-core";
+import { pathToFileURL } from "url";
+import path from "path";
+const out = process.argv[2];
+const browser = await puppeteer.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", args:["--no-sandbox"] });
+const page = await browser.newPage();
+await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
+await page.goto(pathToFileURL(path.resolve("public/index.html")).href, { waitUntil: "networkidle2", timeout: 60000 });
+await page.evaluate(() => document.fonts?.ready);
+await page.waitForSelector("svg.svg-inline--fa");
+console.log("i left:", await page.$$eval("i.fa-solid", e=>e.length));
+await page.emulateMediaType("print");
+await page.pdf({ path: out, format: "A4", printBackground: true, margin:{top:"0px",bottom:"0px",left:"0px",right:"0px"}, tagged: true, outline: false });
+await browser.close();
